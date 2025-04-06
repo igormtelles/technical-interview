@@ -57,36 +57,41 @@ nome_png = 'daily_sales.png'
 # Defining the moving average window size (in days)
 window_size = 7
 
-# Aggregating total sales per day based on quantity sold (not revenue)
-# Each row is a transaction, and we're counting how many units were sold per day
-daily_sales = sales_df.groupby('sale_date')['quantity'].sum()
+# Calculating revenue for each transaction (price * quantity)
+sales_df['revenue'] = sales_df['price'] * sales_df['quantity']
+
+# Converting 'sale_date' column to datetime format
+sales_df['sale_date'] = pd.to_datetime(sales_df['sale_date'])
+
+# Aggregatign total daily revenue
+daily_sales = sales_df.groupby('sale_date')['revenue'].sum()
 
 # Separating X and Y for plotting
 x = daily_sales.index
 y = daily_sales.values
 
-# Calculating the moving average over the defined window
+# Calculating the moving average
 y_average = daily_sales.rolling(window=window_size).mean()
 
-# Seting plot style
+# Setting plot style
 plt.style.use('seaborn-v0_8')
 
 # Creating figure and axis
 fig, ax1 = plt.subplots(1, 1, figsize=(12, 6), sharex=True)
 
-# Ploting raw daily sales (quantity sold)
+# Plotting raw daily revenue
 ax1.plot(x, y, label='Time series data', alpha=0.5, color='plum')
 
-# Ploting 7-day moving average
+# Plotting the 7-day moving average
 ax1.plot(x, y_average, label=f'{window_size}-day moving average', color='indigo')
 
 # Adding title and axis labels
-ax1.set_title(f'Daily sales with {window_size}-day moving average', loc='left', fontsize=18, pad=15)
+ax1.set_title(f'Daily revenue with {window_size}-day moving average', loc='left', fontsize=18, pad=15)
 ax1.set_xlabel('Date', fontsize=14, labelpad=12)
-ax1.set_ylabel('Total Sales', fontsize=14, labelpad=12)
+ax1.set_ylabel('Total Revenue (BRL)', fontsize=14, labelpad=12)
 
-# Y-axis scale adjusted to show all values clearly
-ax1.set_ylim(0, 11)
+# Adjusting Y-axis scale for better readability
+ax1.set_ylim(0, y.max() * 1.1)
 ax1.tick_params(axis='y', labelsize=10, length=5)
 
 # Adding legend
@@ -95,19 +100,15 @@ ax1.legend(fontsize=12, loc='upper right')
 # Adding gridlines
 ax1.grid(True)
 
-# Configuration of major x-axis ticks (years)
+# Configuring X-axis ticks
 ax1.xaxis.set_major_locator(mdates.YearLocator())
 ax1.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
-
-# Configuration of minor x-axis ticks (months: March, June, September, December)
 ax1.xaxis.set_minor_locator(mdates.MonthLocator(bymonth=[3, 6, 9, 12]))
 ax1.xaxis.set_minor_formatter(mdates.DateFormatter('%b'))
 ax1.tick_params(axis='x', which='minor', length=5, color='gray', labelsize=8)
-
-# Rotating x-axis tick labels for better readability
 ax1.tick_params(axis='x', rotation=45)
 
-# Saving the plot as PNG with high resolution
+# Saving the plot as a PNG file with high resolution
 plt.savefig(nome_png, dpi=300)
 print('------------ END OF ITEM 1------------\n')
 print('\n')
