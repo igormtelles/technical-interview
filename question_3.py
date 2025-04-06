@@ -244,6 +244,21 @@ print('Igor M. Telles :)')
 
 
 """
-In the bar plot, the error bars are very small and barely visible.
+In the bar plot: 
+The error bars are very small and barely visible, indicating low variability (or low standard error) 
+in the price values at each quantity level.
 Removing them might make the visualization cleaner and more visually appealing, in my opinion.
+
+
+In the scatter plot: 
+A trend line (linear regression) was computed across all data points
+to capture the general relationship between quantity and price.
+This helps visualize whether there's a consistent trend, such as
+price increasing with quantity or vice versa.
+
+The trend line (black) was calculated using linear regression across all sales data 
+points to identify a potential overall relationship between the quantity sold and 
+the price per unit. The nearly flat slope suggests that there is little to no linear correlation
+between quantity and price in the overall dataset. In other words, selling more units does not 
+necessarily result in a higher or lower price on average.
 """
